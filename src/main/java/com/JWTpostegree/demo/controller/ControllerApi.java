@@ -14,11 +14,17 @@ import com.JWTpostegree.demo.repository.ConsultasRepository;
 import com.JWTpostegree.demo.repository.UserRepository;
 import com.JWTpostegree.demo.utils.JwtTokenUtil;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import java.util.List;
 import java.util.Optional;
 
-@Controller
-@RequestMapping
+    @Controller
+    @RequestMapping
+    @OpenAPIDefinition
 public class ControllerApi {
 
     @Autowired
@@ -31,21 +37,42 @@ public class ControllerApi {
     private ConsultasRepository consultasRepository;
 
 
-
-    @PostMapping("/register") //enpoint para registrar usuário(s)
+//-----------------------------enpoint para registrar usuário(s)-----------------------------------
+    @PostMapping("/register") 
+    @Operation(
+    summary = "Novo Usuario",
+    description = "Cria um novo usuário no sistema e retorna uma mensagem indicando o sucesso ou falha da operação.",
+    method = "POST"
+      )
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "Retorna uma lista de consultas."),
+            @ApiResponse(responseCode = "400", description = "Consultas não encontradas.")
+      }
+    )
     public ResponseEntity<Object> registerUser(@RequestBody Users user){
         String hashedPassword = bCryptPasswordEncoder.encode(user.getSenha());
         user.setSenha(hashedPassword);
         ;
         if (userRepository.save(user).getId()>0){
-            return ResponseEntity.ok("O usuário foi salvo");
+            return ResponseEntity.ok("Usuário criado com sucesso!");
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Usuário não salvo.");
     }
+//-----------------------------enpoint para gerar token--------------------------------------
 
-
-
-    @PostMapping("/generate-token") //enpoint para gerar token
+    @PostMapping("/generate-token") 
+    @Operation(
+    summary = "Generate Token",
+    description = "gera um token para usuarios cadastrados.",
+    method = "GET"
+      )
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "Retorna um token"),
+            @ApiResponse(responseCode = "400", description = "erro ao gerar gerar token")
+     }
+    )
     public ResponseEntity<Object> generateToken(@RequestBody TokenReqRes tokenReqRes){
         Users databaseUser = userRepository.findByUsername(tokenReqRes.getUsername());
         if (databaseUser == null){
@@ -64,30 +91,52 @@ public class ControllerApi {
 
 
 
-    @PostMapping("/validate-token")
+
+
+
+    @PostMapping("/validate-token") //validar token
     public ResponseEntity<Object> validateToken(@RequestBody TokenReqRes tokenReqRes){
         return ResponseEntity.ok(jwtTokenUtil.validateToken(tokenReqRes.getToken()));
     }
-
-
-
    //=================================================================================================
 
    
 
-
-    // /consultas, apenas usuários autenticados podem acessar:
+//--------------------------consultas, apenas usuários autenticados podem acessar:-------------------------------
 
     @GetMapping("/consultas")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @Operation(
+    summary = "Consultas",
+    description = "Exibe todas as consultas salvas no banco de dados.",
+    method = "GET"
+      )
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "consultas listadas com sucesso."),
+            @ApiResponse(responseCode = "400", description = "erro ao buscar consultas.")
+        }
+    )
     public ResponseEntity<List<Consultas>> getAllConsultas() {
         return ResponseEntity.ok(consultasRepository.findAll());
     }
 
-    //  /consultas/{id}, apenas usuários autenticados podem acessar:
 
-        @GetMapping("/consultas/{id}")
+//-------------------------consultas/{id}, apenas usuários autenticados podem acessar:-----------------
+
+    @GetMapping("/consultas/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+     @Operation(
+    summary = "Consultas Por id",
+    description = "busca uma consulta por id",
+    method = "GET"
+      )
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "consulta listada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "erro ao buscar consulta.")
+        }
+    )
     public ResponseEntity<Consultas> getConsultaById(@PathVariable Long id) {
         Optional<Consultas> consulta = consultasRepository.findById(id);
         if(consulta.isPresent()){
@@ -97,31 +146,66 @@ public class ControllerApi {
         }
     }
 
-    //  /newConsulta, apenas usuários autenticados podem criar uma nova consulta:
+
+//-----------------------------Cria uma nova consulta-----------------------------------------------------
+   
 
     @PostMapping("/newConsulta")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @Operation(
+    summary = "Nova Consulta",
+    description = "Cria uma nova consulta, com: medico, paciente, data , hora , preco e departamento",
+    method = "GET"
+      )
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "consulta criada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "erro ao criar consulta.")
+        }
+    )
     public ResponseEntity<Consultas> createConsulta(@RequestBody Consultas consulta) {
         Consultas newConsulta = consultasRepository.save(consulta);
         return new ResponseEntity<>(newConsulta, HttpStatus.CREATED);
     }
 
     
+//------------------------------Deleta uma consulta----------------------------------------------------
+    
 
-    // /deleteConsulta/{id}, apenas usuários autenticados podem deletar uma consulta:
-
-        @DeleteMapping("/deleteConsulta/{id}")
+    @DeleteMapping("/deleteConsulta/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+     @Operation(
+    summary = "Deleta Consulta",
+    description = "Deleta uma consulta pelo id",
+    method = "GET"
+      )
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "Consulta excluida."),
+            @ApiResponse(responseCode = "400", description = "erro ao excluir consulta.")
+        }
+    )
     public ResponseEntity<String> deleteConsulta(@PathVariable Long id) {
         consultasRepository.deleteById(id);
         return new ResponseEntity<>("Consulta deletada com sucesso!", HttpStatus.OK);
     }
 
 
-    ///editarConsulta, apenas usuários autenticados podem editar uma consulta:
+//------------------------------Edita uma consulta-----------------------------------------------------
     
     @PutMapping("/consultas/{id}")
    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @Operation(
+    summary = "Editar Consulta",
+    description = "Edita uma consulta existente.",
+    method = "GET"
+      )
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "consulta editada."),
+            @ApiResponse(responseCode = "400", description = "erro ao editar consulta.")
+        }
+    )
   public ResponseEntity<Consultas> updateConsulta(@PathVariable Long id, @RequestBody Consultas consultaDetails) {
     Optional<Consultas> consultaOptional = consultasRepository.findById(id);
     
@@ -144,9 +228,37 @@ public class ControllerApi {
     }
 }
 
+//--------------------------------------deleta usuário-------------------------------------------------------
+@DeleteMapping("/deleteUser/{userId}")
+ @Operation(
+    summary = "Deletar Usuário",
+    description = "Deleta um usuário baseado no id",
+    method = "DELETE"
+      )
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "Usuário deletado"),
+            @ApiResponse(responseCode = "400", description = "erro ao deletar usário.")
+        }
+        
+)
+public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+    try {
+        Optional<Users> userOptional = userRepository.findById(userId);
+        if(userOptional.isPresent()) {
+            userRepository.deleteById(userId);
+            return new ResponseEntity<>("Usuário excluído com sucesso", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Usuário não encontrado", HttpStatus.NOT_FOUND);
+        }
+    } catch (Exception e) {
+        return new ResponseEntity<>("Erro interno do servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     
+}
 
 
+//-------------------------------------------------------------------------------------------------
 
 
 

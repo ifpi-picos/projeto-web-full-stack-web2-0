@@ -16,7 +16,7 @@ public class JwtTokenUtil {
     private final Key secreteKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     private static final long EXPIRATION_TIME = 60000; //1 min
 
-    public String generateToken(String username) {
+    public String generateToken(String username) { //Este método é responsável por gerar um token JWT:
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
         return Jwts.builder()
