@@ -7,7 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import java.security.Key; //Utilizado para representar uma chave criptográfica.
 import java.util.Date;
 
 @Component
@@ -45,3 +45,12 @@ public class JwtTokenUtil {
 
     
 }
+
+
+
+/*
+ io.jsonwebtoken: Esta biblioteca é usada para criação e verificação de tokens JWT.
+
+ org.springframework.stereotype.Component: Esta anotação é usada para indicar que uma classe é um componente do Spring, permitindo que o Spring gerencie objetos desta classe e os injete quando necessário.
+
+ */

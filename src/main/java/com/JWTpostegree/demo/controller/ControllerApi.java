@@ -51,8 +51,8 @@ public class ControllerApi {
       }
     )
     public ResponseEntity<Object> registerUser(@RequestBody Users user){
-        String hashedPassword = bCryptPasswordEncoder.encode(user.getSenha());
-        user.setSenha(hashedPassword);
+        String hasPassword = bCryptPasswordEncoder.encode(user.getSenha());
+        user.setSenha(hasPassword);
         ;
         if (userRepository.save(user).getId()>0){
             return ResponseEntity.ok("Usuário criado com sucesso!");
@@ -258,7 +258,38 @@ public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
 }
 
 
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------Atenticação-----------------------------------------------
+
+@PostMapping("/login")
+@Operation(
+    summary = "Login de usuário",
+    description = "Efetua o login e retorna o token JWT",
+    method = "POST"
+)
+@ApiResponses(
+    value = {
+        @ApiResponse(responseCode = "200", description = "Login realizado com sucesso"),
+        @ApiResponse(responseCode = "401", description = "Credenciais inválidas"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    }
+)
+public ResponseEntity<Object> loginUser(@RequestBody Users loginUser) {
+    try {
+        Users user = userRepository.findByUsername(loginUser.getUsername());
+        if (user != null && bCryptPasswordEncoder.matches(loginUser.getSenha(), user.getSenha())) {
+            String token = jwtTokenUtil.generateToken(user.getUsername()); // Correção aqui
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+        }
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor");
+    }
+}
+
+//--------------------------------------------------------------------------------------------
+
+
 
 
 
