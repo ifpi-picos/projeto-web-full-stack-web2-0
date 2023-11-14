@@ -35,6 +35,7 @@ public class ConsultasController {
 
     @Autowired
     private ConsultasRepository consultasRepository;
+   
 
 //--------------------------consultas, apenas usuários autenticados podem acessar:-------------------------------
     @GetMapping("/consultas")
@@ -52,6 +53,7 @@ public class ConsultasController {
     )
     public ResponseEntity<List<Consultas>> getAllConsultas() {
         return ResponseEntity.ok(consultasRepository.findAll());
+        
     }
 
     //-------------------------consultas/{id}, apenas usuários autenticados podem acessar:-----------------
@@ -154,6 +156,7 @@ public class ConsultasController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
+
 
 
     
