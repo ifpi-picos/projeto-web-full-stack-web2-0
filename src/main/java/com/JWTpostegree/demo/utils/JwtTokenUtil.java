@@ -17,15 +17,19 @@ public class JwtTokenUtil {
     private static final long EXPIRATION_TIME = 60000; //1 min
 
     public String generateToken(String username) { //Este método é responsável por gerar um token JWT:
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(secreteKey)
-                .compact();
+        Date now = new Date(); //Obtém a data atual.
+
+        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME); //Calcula a data de expiração do token adicionando o tempo de expiração ao tempo atual.
+
+        return Jwts.builder() //Inicia a construção do token.
+                .setSubject(username) //Define o assunto do token como o nome de usuário.
+                .setIssuedAt(now) // Define a data de emissão do token como a data atual.
+                .setExpiration(expiryDate)// Define a data de expiração do token.
+                .signWith(secreteKey) //Assina o token com a chave secreta especificada 
+                .compact(); // Compacta o token para uma string.
     }
+
+    
     public String validateToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -33,11 +37,12 @@ public class JwtTokenUtil {
                     .build()
                     .parseClaimsJws(token);
             return "valid";
+            //utilizando a biblioteca io.jsonwebtoken.Jwts para realizar a análise do token. O método parseClaimsJws(token) faz a análise e verificação do token. Se o token for válido, esse método não lançará exceções. Caso contrário, lançará uma exceção.
         } catch (ExpiredJwtException ex) {
-            // Token is expired
+            // Token xepirado
             return "expired token";
         } catch (JwtException | IllegalArgumentException e) {
-            // Token is invalid (failed parsing or verification)
+            // Token invalido (falhha token)
             return "invalid token";
         }
     }

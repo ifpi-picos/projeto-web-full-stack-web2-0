@@ -26,18 +26,18 @@ public class SecurityController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder; //Criptografia de senhas
    
 
 //-----------------------------enpoint para gerar token--------------------------------------
 
 @PostMapping("/generate-token") 
-@Operation(
+@Operation( //openapi documentation / descrição da requisiçaõ
 summary = "Generate Token",
 description = "gera um token para usuarios cadastrados.",
 method = "GET"
   )
-@ApiResponses(
+@ApiResponses(//openapi documentation / estatus resposta
     value = {
         @ApiResponse(responseCode = "200", description = "Retorna um token"),
         @ApiResponse(responseCode = "400", description = "erro ao gerar gerar token")
@@ -47,12 +47,13 @@ public ResponseEntity<Object> generateToken(@RequestBody TokenReqRes tokenReqRes
     Users databaseUser = userRepository.findByUsername(tokenReqRes.getUsername());
     if (databaseUser == null){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Desculpe, o usuário não existe");
-    }
+    }      //Criptografia de senhas
     if (new BCryptPasswordEncoder().matches(tokenReqRes.getSenha(), databaseUser.getSenha())){
         String token = jwtTokenUtil.generateToken(tokenReqRes.getUsername());
         tokenReqRes.setToken(token);
         tokenReqRes.setExpirationTime("6000 Sec"); //TokenReqRes --> em TokenReqRes
         return ResponseEntity.ok(tokenReqRes);
+        //O token é então retornado na resposta da solicitação de autenticação.
     }else {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A senha não corresponde");
     }
