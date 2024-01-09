@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faça Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            flex-direction: column; /* Adiciona flex-direction: column para alinhar verticalmente */
+        }
+
+        .navbar {
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px; /* Adiciona margem abaixo da barra de navegação */
+            position: fixed; /* Adiciona a propriedade fixed para fixar a barra no topo */
+            top: 0; /* Define o topo como 0 para alinhar a barra no topo da página */
+            z-index: 1000; /* Adiciona um índice Z alto para garantir que a barra esteja acima de outros elementos */
+        }
+
+        .navbar-title {
+            color: #fff;
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        form {
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            margin-top: 60px; /* Adiciona margem superior para compensar a barra fixa */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2 class="navbar-title">Consultas</h2>
+    </div>
+
+    <form id="loginForm">
+        <h1>Faça login</h1>
+
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">senha:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="button" onclick="login()">Logar</button>
+    </form>
+
+    <script>
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+    
+            const requestBody = {
+                username: username,
+                senha: password
+            };
+    
+            fetch('http://localhost:3553/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+    
+                
+                const redirectUrl = 'http://localhost:3553/consultas.html?token=' + data.token;
+                window.location.href = redirectUrl;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Login failed. Check the console for details.');
+            });
+        }
+    </script>
+</body>
+</html>
