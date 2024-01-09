@@ -72,29 +72,46 @@ public ResponseEntity<Object> validateToken(@RequestBody TokenReqRes tokenReqRes
 //=================================================================================================
 
 //-----------------------------enpoint para registrar usuário(s)-----------------------------------
-    @PostMapping("/register") 
-    @Operation(
-    summary = "Novo Usuario",
-    description = "Cria um novo usuário no sistema e retorna uma mensagem indicando o sucesso ou falha da operação.",
-    method = "POST"
-      )
-    @ApiResponses(
+@PostMapping("/register")
+@Operation(
+        summary = "Registro de Usuário",
+        description = "Cria um novo usuário no sistema e retorna um token JWT.",
+        method = "POST"
+)
+@ApiResponses(
         value = {
-            @ApiResponse(responseCode = "200", description = "Retorna uma lista de consultas."),
-            @ApiResponse(responseCode = "400", description = "Consultas não encontradas.")
-      }
-    )
-    public ResponseEntity<Object> registerUser(@RequestBody Users user){
-        String hasPassword = bCryptPasswordEncoder.encode(user.getSenha());
-        user.setSenha(hasPassword);
-        ;
-        if (userRepository.save(user).getId()>0){
-            return ResponseEntity.ok("Usuário criado com sucesso!");
+                @ApiResponse(responseCode = "200", description = "Usuário registrado com sucesso."),
+                @ApiResponse(responseCode = "400", description = "Erro ao registrar usuário.")
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Usuário não salvo.");
-    }
+)
+public ResponseEntity<Object> registerUser(@RequestBody Users user) {
+    try {
+        //o hash da senha antes de salvar
+        String hashedPassword = bCryptPasswordEncoder.encode(user.getSenha());
+        user.setSenha(hashedPassword);
 
-   
+        // Cria um novo usuário e associe as consultas
+        Users savedUser = new Users();
+        savedUser.setUsername(user.getUsername());
+        savedUser.setSenha(user.getSenha());
+
+        // Salva o usuário
+        Users registeredUser = userRepository.save(savedUser);
+
+        // Cria um token para o novo usuário
+        String token = jwtTokenUtil.generateToken(registeredUser.getUsername());
+
+        // Retorne o token e outras informações, se necessário
+        TokenReqRes response = new TokenReqRes();
+        response.setToken(token);
+        response.setExpirationTime("6000 Sec"); 
+        return ResponseEntity.ok(response);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar usuário.");
+    }
+}
+
 
 //--------------------------------------deleta usuário-------------------------------------------------------
 @DeleteMapping("/deleteUser/{userId}")
@@ -141,19 +158,27 @@ public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     }
 )
-public ResponseEntity<Object> loginUser(@RequestBody Users loginUser) {
+public ResponseEntity<TokenReqRes> loginUser(@RequestBody Users loginUser) {
     try {
         Users user = userRepository.findByUsername(loginUser.getUsername());
         if (user != null && bCryptPasswordEncoder.matches(loginUser.getSenha(), user.getSenha())) {
-            String token = jwtTokenUtil.generateToken(user.getUsername()); // Correção aqui
-            return ResponseEntity.ok(token);
+            String token = jwtTokenUtil.generateToken(user.getUsername());
+
+            TokenReqRes response = new TokenReqRes();
+            response.setToken(token);
+            response.setExpirationTime("6000 Sec"); // Substitua pelo tempo real de expiração do token
+
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor");
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 }
+
+
 
 
 

@@ -1,11 +1,15 @@
 package com.JWTpostegree.demo;
 
+import com.JWTpostegree.demo.model.Users;
+
 import jakarta.persistence.Entity;
+//import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+//import jakarta.persistence.JoinColumn;
+//import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -18,17 +22,17 @@ public class Consultas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    private Users user;
+
     private String medico;
     private String paciente;
     private String data;
     private String hora;
     private double preco;
+    private String departamento;
 
-
-    @ManyToOne /* define relacionamento muitos para 1 entre as duas tabelas */
-    @JoinColumn(name = "departamento_id") /* nome da chave estrangeira */
-    private Departamentos departamentos;
-
+    
 
     public Long getId() {
         return id;
@@ -90,15 +94,14 @@ public class Consultas {
     }
 
 
-    public Departamentos getDepartamentos() {
-        return departamentos;
+   
+    public String getDepartamento() {
+        return departamento;
     }
 
-
-    public void setDepartamentos(Departamentos departament) {
-        this.departamentos = departament;
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
     }
-
     
 
 

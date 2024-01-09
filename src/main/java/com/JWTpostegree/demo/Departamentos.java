@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+
+
 @Data
 @Entity /* anotação da JPA que inidca que essa classe será mapeada p/ uma tabela do databese*/
 @Table(name = "tb_departamentos")
