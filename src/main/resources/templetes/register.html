@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .navbar {
+            background-color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .navbar-title {
+            color: #fff;
+            font-size: 1.5em;
+            margin: 0;
+            margin-right: auto; 
+            margin-left: auto; 
+        }
+
+        .navbar-login {
+            color: #098c21;
+            margin-right: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; 
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        #responseMessage {
+            margin-top: 10px;
+            color: #333;
+        }
+    </style>
+    <title>Cadastro de Usuário</title>
+</head>
+<body>
+    <div class="navbar">
+        <h2 class="navbar-title">Consultas</h2>
+        <a href="http://localhost:3553/login.html" class="navbar-login">Login</a>
+    </div>
+
+    <div class="container">
+        <h2>Cadastro de Usuário</h2>
+        <form id="registerForm">
+            
+            <label for="username">Usuário:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" required>
+            
+            <button type="button" onclick="registerUser()">Cadastrar</button>
+        </form>
+       
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        function registerUser() {
+            const username = document.getElementById('username').value;
+            const senha = document.getElementById('senha').value;
+
+            
+            if (username.trim() === '' || senha.trim() === '') {
+                
+                document.getElementById('responseMessage').textContent = 'Preencha todos os campos.';
+                return; 
+            }
+
+            const user = {
+                username: username,
+                senha: senha
+            };
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+            .then(response => response.text())
+            .then(data => {
+
+                document.getElementById('responseMessage').textContent = data;
+
+                window.location.href = '/consultas.html';
+            })
+            .catch((error) => {
+                console.error('Erro:', error);
+            });
+        }
+    </script>
+</body>
+</html>
