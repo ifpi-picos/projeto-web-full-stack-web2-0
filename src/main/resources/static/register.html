@@ -27,8 +27,8 @@
             color: #fff;
             font-size: 1.5em;
             margin: 0;
-            margin-right: auto; /* Move para a margem direita automática */
-            margin-left: auto; /* Move para a margem esquerda automática */
+            margin-right: auto; /*Move para a margem direita automática*/
+            margin-left: auto; /*Move para a margem esquerda automática*/
         }
 
         .navbar-login {
@@ -41,7 +41,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px; /* Adiciona margem entre a barra e o conteúdo */
+            margin-top: 20px; /*Adiciona margem entre a barra e o conteúdo*/
         }
 
         form {
@@ -79,14 +79,14 @@
     <div class="container">
         <h2>Cadastro de Usuário</h2>
         <form id="registerForm">
-            <!-- Campos do formulário -->
+            <!--Campos do formulário-->
             <label for="username">Usuário:</label>
             <input type="text" id="username" name="username" required>
             
             <label for="senha">Senha:</label>
             <input type="password" id="senha" name="senha" required>
             
-            <!-- Botão de cadastro com chamada para a função registerUser() -->
+            <!--Botão de cadastro com chamada para a função registerUser()-->
             <button type="button" onclick="registerUser()">Cadastrar</button>
         </form>
        
@@ -95,24 +95,24 @@
 
     <script>
         function registerUser() {
-            // Obter valores dos campos de entrada
+            //Obter valores dos campos de entrada
             const username = document.getElementById('username').value;
             const senha = document.getElementById('senha').value;
 
-            // Verificar se os campos estão vazios
+            //Verificar se os campos estão vazios
             if (username.trim() === '' || senha.trim() === '') {
-                // Exibir mensagem de erro
+                //Exibir mensagem de erro
                 document.getElementById('responseMessage').textContent = 'Preencha todos os campos.';
-                return; // Não prosseguir com a requisição
+                return; //Não prosseguir com a requisição
             }
 
-            // Criar objeto de usuário
+            //Criar objeto de usuário
             const user = {
                 username: username,
                 senha: senha
             };
 
-            // Realizar requisição de cadastro de usuário usando fetch
+            //Realizar requisição de cadastro de usuário usando fetch
             fetch('/register', {
                 method: 'POST',
                 headers: {
@@ -122,10 +122,10 @@
             })
             .then(response => response.text())
             .then(data => {
-                // Exibir mensagem de resposta
+                //Exibir mensagem de resposta
                 document.getElementById('responseMessage').textContent = data;
 
-                // Redirecionar para a página consultas.html após o registro
+                //Redirecionar para a página consultas.html após o registro
                 window.location.href = '/consultas.html';
             })
             .catch((error) => {

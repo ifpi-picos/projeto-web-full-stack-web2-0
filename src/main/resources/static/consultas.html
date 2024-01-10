@@ -79,7 +79,8 @@
     </div>
 
     <div class="container">
-        <!-- Formulário para adicionar consulta -->
+
+        <!--Formulário para adicionar consulta-->
         <form id="addConsultaForm">
             <label for="medico">Médico:</label>
             <input type="text" id="medico" name="medico" required>
@@ -88,13 +89,13 @@
             <input type="text" id="paciente" name="paciente" required>
 
             <label for="data">Data:</label>
-            <input type="text" id="data" name="data" required>
+            <input type="date" id="data" name="data" required>
 
             <label for="hora">Hora:</label>
-            <input type="text" id="hora" name="hora" required>
+            <input type="time" id="hora" name="hora" required>
 
             <label for="preco">Preço:</label>
-            <input type="text" id="preco" name="preco" required>
+            <input type="number" id="preco" name="preco" required>
 
             <label for="departamento">Departamento:</label>
             <input type="text" id="departamento" name="departamento" required>
@@ -114,18 +115,18 @@
                     <th>Hora</th>
                     <th>Preço</th>
                     <th>Ação</th>
-                    <!-- Adicione mais colunas conforme necessário -->
+                    <!--Adicione mais colunas se necessário-->
                 </tr>
             </thead>
             <tbody>
-                <!-- Os dados da consulta serão preenchidos aqui dinamicamente -->
+                <!--Os dados da consulta serão preenchidos aqui dinamicamente-->
             </tbody>
         </table>
     </div>
 
     <script>
       document.addEventListener('DOMContentLoaded', function () {
-    // Função para buscar e preencher as consultas
+    //Função para buscar e preencher as consultas
     function fetchConsultas() {
         // Obtenha o nome de usuário da sessão ou de onde você o tiver
         const username = "coloqueAquiONomeDeUsuario"; // Substitua pelo valor real
@@ -138,7 +139,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            // Preenche dinamicamente a tabela com os dados das consultas
+            //Preenche dinamicamente a tabela com os dados das consultas
             const consultasTable = document.getElementById('consultasTable').getElementsByTagName('tbody')[0];
             consultasTable.innerHTML = '';
 
@@ -153,7 +154,7 @@
                 row.insertCell(6).textContent = consulta.hora;
                 row.insertCell(7).textContent = consulta.preco;
 
-                // Adiciona um botão para deletar a consulta
+                //Adiciona um botão para deletar a consulta
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Deletar';
                 deleteButton.addEventListener('click', () => deleteConsulta(consulta.id));
@@ -166,12 +167,12 @@
         });
     }
 
-    // Chama a função para buscar consultas quando a página carregar
+    //Chama a função para buscar consultas quando a página carregar
     fetchConsultas();
 });
 
 
-        // Função para adicionar consulta
+        //Função para adicionar consulta
         async function addConsulta() {
             const form = document.getElementById('addConsultaForm');
 
@@ -198,9 +199,9 @@
 
                     if (response.ok) {
                         console.log('Consulta adicionada com sucesso!');
-                        // Limpa os campos do formulário após adicionar uma nova consulta
+                        //Limpa os campos do formulário após adicionar uma nova consulta
                         form.reset();
-                        // Recarrega a página inteira
+                        //Recarrega a página inteira
                         location.reload();
                     } else {
                         console.error('Erro ao adicionar consulta.');
@@ -209,12 +210,12 @@
                     console.error('Erro ao adicionar consulta:', error);
                 }
             } else {
-                // Exibe uma mensagem de erro ou realiza alguma ação caso algum campo esteja vazio
+                //Exibe uma mensagem de erro caso algum campo esteja vazio
                 console.error('Todos os campos do formulário devem ser preenchidos.');
             }
         }
 
-        // Função para deletar consulta
+        //Função para deletar consulta
         async function deleteConsulta(consultaId) {
             try {
                 const response = await fetch(`http://localhost:3553/deleteConsulta/${consultaId}`, {
@@ -227,7 +228,7 @@
 
                 if (response.ok) {
                     console.log('Consulta deletada com sucesso!');
-                    // Recarrega a página inteira
+                    //Recarrega a página inteira
                     location.reload();
                 } else {
                     console.error('Erro ao deletar consulta.');
