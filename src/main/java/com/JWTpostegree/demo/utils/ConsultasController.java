@@ -3,19 +3,19 @@ package com.JWTpostegree.demo.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.JWTpostegree.demo.Consultas;
-import com.JWTpostegree.demo.Departamentos;
+//import com.JWTpostegree.demo.Departamentos;
 import com.JWTpostegree.demo.controller.PreAuthorize;
 import com.JWTpostegree.demo.model.Users;
-import com.JWTpostegree.demo.model.TokenReqRes;
+//import com.JWTpostegree.demo.model.TokenReqRes;
 //import com.JWTpostegree.demo.model.Users;
 import com.JWTpostegree.demo.repository.ConsultasRepository;
 import com.JWTpostegree.demo.repository.UserRepository;
-import com.JWTpostegree.demo.utils.JwtTokenUtil;
+//import com.JWTpostegree.demo.utils.JwtTokenUtil;
 import com.JWTpostegree.demo.repository.DepartamentosRepository;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
