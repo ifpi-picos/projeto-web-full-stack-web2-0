@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ConsultasRepository extends JpaRepository<Consultas, Long> {
   List<Consultas> findByUser(Users user);
-    //Aqui pode ser adicionado métodos de pesquisa personalizados
+    // Aqui pode ser adicionado métodos de pesquisa personalizados...
 }
 
 /*

@@ -90,18 +90,18 @@ public ResponseEntity<Object> registerUser(@RequestBody Users user) {
         String hashedPassword = bCryptPasswordEncoder.encode(user.getSenha());
         user.setSenha(hashedPassword);
 
-        // Cria um novo usuário e associe as consultas
+        //Cria um novo usuário e associe as consultas
         Users savedUser = new Users();
         savedUser.setUsername(user.getUsername());
         savedUser.setSenha(user.getSenha());
 
-        // Salva o usuário
+        //Salva o usuário
         Users registeredUser = userRepository.save(savedUser);
 
-        // Cria um token para o novo usuário
+        //Cria um token para o novo usuário
         String token = jwtTokenUtil.generateToken(registeredUser.getUsername());
 
-        // Retorne o token e outras informações, se necessário
+        //Retorne o token e outras informações, se necessário
         TokenReqRes response = new TokenReqRes();
         response.setToken(token);
         response.setExpirationTime("6000 Sec"); 
